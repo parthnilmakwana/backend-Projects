@@ -1,0 +1,28 @@
+{
+  "name": "data-modelling",
+  "version": "1.0.0",
+  "description": "data modelling in mongoose",
+  "keywords": [
+    "data",
+    "model",
+    "mongoose"
+  ],
+  "homepage": "https://github.com/parthnilmakwana/backend-Projects#readme",
+  "bugs": {
+    "url": "https://github.com/parthnilmakwana/backend-Projects/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/parthnilmakwana/backend-Projects.git"
+  },
+  "license": "ISC",
+  "author": "parthnil makwana",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "mongoose": "^9.7.3"
+  }
+}

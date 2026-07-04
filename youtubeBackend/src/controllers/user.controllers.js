@@ -174,41 +174,47 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
 
-    if (!incomingRefreshToken) {
-        throw new apiError(401, "Refresh token is required");
-    }
+  if (!incomingRefreshToken) {
+    throw new apiError(401, "Refresh token is required");
+  }
 
-    const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+  const decodedToken = jwt.verify(
+    incomingRefreshToken,
+    process.env.REFRESH_TOKEN_SECRET
+  );
 
-    const user = await User.findById(decodedToken._id);
-    
-    if(!user){
-        throw new apiError(401, "User not found");
-    }
+  const user = await User.findById(decodedToken._id);
 
-    if (user.refreshToken !== incomingRefreshToken) {
-        throw new apiError(401, "Invalid refresh token");
-    }
+  if (!user) {
+    throw new apiError(401, "User not found");
+  }
 
-    const {accessToken, refreshToken} = await generateRefreshAndAccessToken(user._id);
+  if (user.refreshToken !== incomingRefreshToken) {
+    throw new apiError(401, "Invalid refresh token");
+  }
 
-    const options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-    };
+  const { accessToken, refreshToken } = await generateRefreshAndAccessToken(
+    user._id
+  );
 
-    return res
-        .status(200)
-        .cookie("refreshToken", refreshToken, options)
-        .cookie("accessToken", accessToken, options)
-        .json(new apiResponse(200, "Access token refreshed successfully", {
-            accessToken,
-            refreshToken
-        }));
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  };
 
-
+  return res
+    .status(200)
+    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, options)
+    .json(
+      new apiResponse(200, "Access token refreshed successfully", {
+        accessToken,
+        refreshToken,
+      })
+    );
 });
 
 export default { registerUser, loginUser, logoutUser, refreshAccessToken };

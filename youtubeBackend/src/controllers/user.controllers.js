@@ -3,6 +3,26 @@ import { User } from "../models/user.models.js";
 import apiError from "../utils/apiError.js";
 import apiResponse from "../utils/apiResponse.js";
 import uploadOnCloudinary from "./../utils/cloudinary.js";
+import jwt from "jsonwebtoken";
+
+const generateRefreshAndAccessToken = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const refreshToken = await user.generateRefreshToken();
+    const accessToken = await user.generateAccessToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { refreshToken, accessToken };
+  } catch (error) {
+    throw new apiError(
+      500,
+      error?.message ||
+        "something went wrong while generating refresh and access token"
+    );
+  }
+};
 
 const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
@@ -31,15 +51,19 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new apiError(400, "User with this username or email already exists");
   }
 
-//   console.log("req.files:", req.files); // Log the entire req.files object
+  //   console.log("req.files:", req.files); // Log the entire req.files object
 
   const avatarLocalPath = req.files?.avatar?.[0]?.path;
-//   const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+  //   const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
 
-let coverImageLocalPath;
-if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+  let coverImageLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
     coverImageLocalPath = req.files.coverImage[0].path;
-}   
+  }
 
   if (!avatarLocalPath) {
     throw new apiError(400, "Avatar image is required");
@@ -49,8 +73,8 @@ if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.leng
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
   console.log("Avatar Local Path:", avatarLocalPath);
-console.log("Avatar Upload:", avatar);
-console.log("Cover Upload:", coverImage);
+  console.log("Avatar Upload:", avatar);
+  console.log("Cover Upload:", coverImage);
 
   if (!avatar) {
     throw new apiError(400, "Failed to upload avatar image");
@@ -73,9 +97,84 @@ console.log("Cover Upload:", coverImage);
     throw new apiError(500, "something went wrong while creating user");
   }
 
-  res
+  return res
     .status(201)
     .json(new apiResponse(200, "User created successfully", createdUser));
 });
 
-export default registerUser;
+const loginUser = asyncHandler(async (req, res) => {
+  const { username, email, password } = req.body;
+
+  if (!(username || email)) {
+    throw new apiError(400, "Username or email is required");
+  }
+
+  const user = await User.findOne({
+    $or: [{ username }, { email }],
+  });
+
+  if (!user) {
+    throw new apiError(400, "User not found");
+  }
+
+  const isPasswordValid = await user.comparePassword(password);
+
+  if (!isPasswordValid) {
+    throw new apiError(400, "Invalid password");
+  }
+
+  const { refreshToken, accessToken } = await generateRefreshAndAccessToken(
+    user._id
+  );
+
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  };
+
+  return res
+    .status(201)
+    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, options)
+    .json(
+      new apiResponse(200, "User logged in successfully", {
+        user: loggedInUser,
+        accessToken,
+        refreshToken,
+      })
+    );
+});
+
+const logoutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $unset: {
+        refreshToken: 1,
+      },
+    },
+
+    { new: true }
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  };
+
+  return res
+    .status(201)
+    .clearCookie("refreshToken", options)
+    .clearCookie("accessToken", options)
+    .json(new apiResponse(200, "User logged out successfully", {}));
+});
+
+const refreshAccessToken = asyncHandler(async (req, res) => {
+    
+});
+
+export default { registerUser, loginUser, logoutUser, refreshAccessToken };

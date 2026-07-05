@@ -7,7 +7,7 @@ const jwtVerify = asyncHandler(async (req, _, next) => {
   try {
     const token =
       req.cookies.accessToken ||
-      req.headers("Authorization").replace("Bearer ", "");
+      req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
       throw new apiError(401, "You are not logged in");

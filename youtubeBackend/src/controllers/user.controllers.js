@@ -4,6 +4,7 @@ import apiError from "../utils/apiError.js";
 import apiResponse from "../utils/apiResponse.js";
 import uploadOnCloudinary from "./../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const generateRefreshAndAccessToken = async (userId) => {
   try {
@@ -376,13 +377,13 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       $addFields: {
         subscribersCount: { $size: "$subscribers" },
         subscribedToCount: { $size: "$subscribedTo" },
-      },
-      isSubscribed: {
-        $cond: [
-          { $in: [req.user._id, "$subscribers.subscriber"] },
-          true,
-          false,
-        ],
+        isSubscribed: {
+          $cond: [
+            { $in: [req.user._id, "$subscribers.subscriber"] },
+            true,
+            false,
+          ],
+        },
       },
     },
     {
@@ -452,6 +453,20 @@ const getWatchHistory = asyncHandler(async (req, res) => {
       },
     },
   ]);
+
+  if (!user?.length) {
+    throw new apiError(404, "User not found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new apiResponse(
+        200,
+        "Watch history fetched successfully",
+        user[0].watchHistory
+      )
+    );
 });
 
 export {

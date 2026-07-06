@@ -19,14 +19,17 @@ function App() {
     };
 
   useEffect(() => {
-   randomJokes();
+    randomJokes();
   }, []);
 
   return (
     <>
-      <h1> hello from frontend </h1>
-      <p>{joke?.joke}</p>
-<Button text="Get Random Joke" onClick={randomJokes} />
+    <div className="flex flex-col items-center justify-center h-screen bg-black">
+
+      <h1 className="text-white"> hello from frontend </h1>
+      <p className="text-white">{joke?.joke}</p>
+<Button  text="Get Random Joke" className="m-4" onClick={randomJokes}  />
+    </div>
     </>
   );
 }

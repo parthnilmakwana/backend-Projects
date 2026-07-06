@@ -10,4 +10,4 @@ const jokesSchema = new Schema({
 timestamps: true
 })
 
-export const Jokes = mongoose.model("Jokes", jokesSchema);
+export const Joke = mongoose.model("Joke", jokesSchema);

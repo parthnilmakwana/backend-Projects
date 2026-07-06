@@ -60,4 +60,17 @@ const getJokeById = async (req, res) => {
   }
 };
 
-export { getJokes, createJoke, createJokes, getJokeById };
+const getRandomJoke = async (req, res) => {
+    try{
+const randomJoke = await Joke.aggregate([{ $sample: { size: 1 } }]);
+if (!randomJoke.length) {
+    return res.status(404).json({ message: "No jokes found" });
+}
+res.status(200).json(randomJoke[0]);
+
+    }catch(error){
+        res.status(500).json({ message: "Error fetching random joke", error: error.message });
+    }
+}
+
+export { getJokes, createJoke, createJokes, getJokeById, getRandomJoke };

@@ -21,7 +21,9 @@ app.use(
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 import userRoutes from "./routes/user.router.js";
+import todoRoutes from "./routes/todos.router.js";
 
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/todos", todoRoutes);
 
 export default app;

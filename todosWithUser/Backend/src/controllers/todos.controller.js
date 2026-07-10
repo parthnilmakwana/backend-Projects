@@ -1,5 +1,5 @@
 import { Todo } from "../models/todos.model.js";
-import asyncHandler from "express-async-handler";
+import asyncHandler from "../utils/asyncHandler.js";
 import apiError from "../utils/apiError.js";
 import apiResponse from "../utils/apiResponse.js";
 
@@ -19,7 +19,7 @@ const createTodo = asyncHandler(async (req, res, next) => {
 
 const getTodos = asyncHandler(async (req, res, next) => {
   const todos = await Todo.find({ owner: req.user._id });
-  if (!todos.length === 0) {
+  if (!todos.length) {
     throw new apiError(404, "Todos not found");
   }
   return res

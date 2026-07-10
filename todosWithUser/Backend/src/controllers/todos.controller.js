@@ -5,6 +5,9 @@ import apiResponse from "../utils/apiResponse.js";
 
 const createTodo = asyncHandler(async (req, res, next) => {
   const { title, description } = req.body;
+  if (!title || !description) {
+    throw new apiError(400, "Title and description are required");
+  }
   const todo = await Todo.create({ title, description, owner: req.user._id });
   if (!todo) {
     throw new apiError(400, "Todo creation failed");
@@ -16,7 +19,7 @@ const createTodo = asyncHandler(async (req, res, next) => {
 
 const getTodos = asyncHandler(async (req, res, next) => {
   const todos = await Todo.find({ owner: req.user._id });
-  if (!todos) {
+  if (!todos.length === 0) {
     throw new apiError(404, "Todos not found");
   }
   return res
@@ -55,4 +58,5 @@ const deleteTodo = asyncHandler(async (req, res, next) => {
     .json(new apiResponse(200, todo, "Todo deleted successfully"));
 });
 
-export { createTodo, getTodos, updateTodo, deleteTodo };
+
+export { createTodo, getTodos, updateTodo, deleteTodo};

@@ -17,15 +17,13 @@ const createTodo = asyncHandler(async (req, res, next) => {
     .json(new apiResponse(201, todo, "Todo created successfully"));
 });
 
-const getTodos = asyncHandler(async (req, res, next) => {
-  const todos = await Todo.find({ owner: req.user._id });
-  if (!todos.length) {
-    throw new apiError(404, "Todos not found");
-  }
-  return res
-    .status(200)
-    .json(new apiResponse(200, todos, "Todos fetched successfully"));
-});
+    const getTodos = asyncHandler(async (req, res, next) => {
+    const todos = await Todo.find({ owner: req.user._id });
+   
+    return res
+        .status(200)
+        .json(new apiResponse(200, todos, "Todos fetched successfully"));
+    });
 
 const updateTodo = asyncHandler(async (req, res, next) => {
   const { id } = req.params;

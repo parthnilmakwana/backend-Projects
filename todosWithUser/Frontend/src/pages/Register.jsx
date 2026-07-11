@@ -20,7 +20,7 @@ function Register() {
     setLoading(true);
 
     try {
-      await api.post("/user/register", formData);
+      await api.post("/users/register", formData);
       navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Please try again.");
@@ -30,68 +30,82 @@ function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-3xl font-bold text-center text-gray-800">Create an Account</h2>
-        
-        {error && (
-          <div className="p-3 text-sm text-red-600 bg-red-100 rounded-md">
-            {error}
-          </div>
-        )}
-
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Username</label>
-            <Input
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="johndoe"
-              className="w-full"
-              required
-            />
-          </div>
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Email</label>
-            <Input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="john@example.com"
-              className="w-full"
-              required
-            />
-          </div>
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Password</label>
-            <Input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="w-full"
-              required
-            />
-          </div>
-          
-          <Button 
-            type="submit" 
-            className="w-full mt-4"
-            disabled={loading}
-          >
-            {loading ? "Registering..." : "Register"}
-          </Button>
-        </form>
-        
-        <p className="text-sm text-center text-gray-600">
-          Already have an account?{" "}
-          <Link to="/login" className="text-blue-500 hover:underline">
-            Login here
-          </Link>
+    <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8 min-h-[80vh]">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 tracking-tight">
+          Create an account
+        </h2>
+        <p className="mt-2 text-center text-sm text-gray-600">
+          Start organizing your tasks today.
         </p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
+          {error && (
+            <div className="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+              {error}
+            </div>
+          )}
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Username
+              </label>
+              <Input
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="johndoe"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email address
+              </label>
+              <Input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <Input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full"
+              disabled={loading}
+            >
+              {loading ? "Creating account..." : "Sign up"}
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center text-sm">
+            <span className="text-gray-500">Already have an account? </span>
+            <Link to="/login" className="font-medium text-gray-900 hover:underline">
+              Sign in
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

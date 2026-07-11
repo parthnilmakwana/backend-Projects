@@ -1,38 +1,13 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 
 function Profile() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await api.get("/user/me");
-        setUser(response.data.data);
-      } catch (err) {
-        setError("Could not load profile. You may need to log in again.");
-        if (err.response?.status === 401) {
-          navigate("/login");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [navigate]);
+  const { user, loading } = useAuth();
 
   if (loading) return <div className="flex justify-center items-center h-screen">Loading profile...</div>;
 
   return (
     <div className="max-w-2xl mx-auto p-4 py-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Profile Settings</h1>
-      
-      {error && <div className="p-3 mb-4 text-red-600 bg-red-100 rounded">{error}</div>}
 
       {user && (
         <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">

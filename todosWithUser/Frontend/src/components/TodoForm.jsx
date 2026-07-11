@@ -24,32 +24,32 @@ function TodoForm({ onAddTodo }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 bg-white rounded-lg shadow-sm border border-gray-200 space-y-3 mb-6">
-      <h3 className="text-lg font-semibold text-gray-700">Add New Todo</h3>
-      
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-        <div className="flex-1 space-y-2">
-          <Input
-            placeholder="What needs to be done?"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full"
-            required
-          />
-          <Input
-            placeholder="Description (optional)"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full text-sm"
+    <form className="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm" onSubmit={handleSubmit}>
+      <h3 className="text-lg font-medium text-gray-900 mb-4">Create New Task</h3>
+      <div className="flex flex-col sm:flex-row gap-4 items-start">
+        <div className="w-full sm:flex-1">
+          <Input 
+            name="title"
+            placeholder="What needs to be done?" 
+            value={title} 
+            onChange={(e) => setTitle(e.target.value)} 
+            required 
           />
         </div>
-        
+        <div className="w-full sm:flex-[1.5]">
+          <Input 
+            name="description"
+            placeholder="Add details (optional)" 
+            value={description} 
+            onChange={(e) => setDescription(e.target.value)} 
+          />
+        </div>
         <Button 
           type="submit" 
           disabled={!title.trim() || loading}
-          className="whitespace-nowrap sm:mt-0"
+          className="w-full sm:w-auto whitespace-nowrap"
         >
-          {loading ? "Adding..." : "Add Todo"}
+          {loading ? "Adding..." : "Add Task"}
         </Button>
       </div>
     </form>

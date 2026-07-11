@@ -39,7 +39,7 @@ function TodoForm({ onAddTodo }) {
         <div className="w-full sm:flex-[1.5]">
           <Input 
             name="description"
-            placeholder="Add details (optional)" 
+            placeholder="Add details" 
             value={description} 
             onChange={(e) => setDescription(e.target.value)} 
           />

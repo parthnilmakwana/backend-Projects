@@ -40,6 +40,7 @@ function TodoCard({ todo, onToggleComplete, onDelete, onEdit }) {
           variant="secondary"
           onClick={() => onEdit && onEdit(todo)}
           className="!px-3 !py-1.5 text-xs"
+          {...todo.isCompleted && { disabled: true }}
         >
           Edit
         </Button>

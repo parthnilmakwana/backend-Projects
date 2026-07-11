@@ -84,49 +84,80 @@ function Dashboard() {
     }
   };
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading todos...</div>;
+  if (loading) return (
+    <div className="flex justify-center items-center min-h-[50vh]">
+      <div className="text-gray-500 font-medium">Loading tasks...</div>
+    </div>
+  );
 
   return (
-    <div className="max-w-4xl mx-auto p-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Your Dashboard</h1>
+    <div className="max-w-4xl mx-auto w-full">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900">Your Tasks</h1>
+      </div>
       
-      {error && <div className="p-3 mb-4 text-red-600 bg-red-100 rounded">{error}</div>}
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+          {error}
+        </div>
+      )}
       
       <TodoForm onAddTodo={handleAddTodo} />
       
-      {/* Edit Modal (Simple inline absolute container) */}
+      {/* Edit Modal */}
       {editingTodo && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <form onSubmit={handleSaveEdit} className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md space-y-4">
-            <h3 className="text-xl font-bold text-gray-800">Edit Todo</h3>
-            <div>
-              <label className="block mb-1 text-sm font-medium">Title</label>
-              <Input 
-                value={editingTodo.title} 
-                onChange={e => setEditingTodo({...editingTodo, title: e.target.value})}
-                className="w-full"
-              />
-            </div>
-            <div>
-              <label className="block mb-1 text-sm font-medium">Description</label>
-              <Input 
-                value={editingTodo.description} 
-                onChange={e => setEditingTodo({...editingTodo, description: e.target.value})}
-                className="w-full"
-              />
-            </div>
-            <div className="flex justify-end gap-2 pt-2">
-              <Button type="button" onClick={() => setEditingTodo(null)} className="bg-gray-400 hover:bg-gray-500">Cancel</Button>
-              <Button type="submit">Save Changes</Button>
-            </div>
-          </form>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md border border-gray-100 transform transition-all">
+            <h3 className="text-xl font-bold text-gray-900 mb-5">Edit Task</h3>
+            <form onSubmit={handleSaveEdit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <Input 
+                  value={editingTodo.title} 
+                  onChange={e => setEditingTodo({...editingTodo, title: e.target.value})}
+                  className="w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <Input 
+                  value={editingTodo.description} 
+                  onChange={e => setEditingTodo({...editingTodo, description: e.target.value})}
+                  className="w-full"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4 mt-6 border-t border-gray-100">
+                <Button 
+                  type="button" 
+                  variant="secondary"
+                  onClick={() => setEditingTodo(null)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  Save Changes
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 
-      <div className="space-y-4 mt-8">
-        <h2 className="text-xl font-semibold text-gray-700">Your Tasks ({todos.length})</h2>
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+            Tasks
+          </h2>
+          <span className="bg-gray-200 text-gray-700 py-0.5 px-2 rounded-full text-xs font-medium">
+            {todos.length}
+          </span>
+        </div>
+        
         {todos.length === 0 ? (
-          <p className="text-gray-500 italic">No tasks yet. Add one above!</p>
+          <div className="text-center py-16 px-4 bg-white border border-dashed border-gray-300 rounded-lg">
+            <h3 className="mt-2 text-sm font-semibold text-gray-900">No tasks</h3>
+            <p className="mt-1 text-sm text-gray-500">Get started by creating a new task above.</p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {todos.map(todo => (

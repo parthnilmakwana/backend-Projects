@@ -1,54 +1,52 @@
 import Button from "./Button";
 
 function TodoCard({ todo, onToggleComplete, onDelete, onEdit }) {
-  // Return null if no todo is provided to avoid crashing
   if (!todo) return null;
 
   return (
-    <div
-      className={`p-4 rounded-lg shadow-sm border flex flex-col gap-3 transition-all 
-        ${todo.isCompleted ? "bg-gray-50 border-gray-200 opacity-75" : "bg-white border-gray-300 hover:shadow-md"}`}
-    >
-      <div className="flex items-start gap-3">
-        {/* Checkbox for toggling completion */}
-        <input
-          type="checkbox"
-          checked={todo.isCompleted || false}
-          onChange={() => onToggleComplete && onToggleComplete(todo._id)}
-          className="mt-1 w-5 h-5 cursor-pointer accent-blue-500"
-        />
-
-        {/* Todo Content */}
-        <div className="flex flex-col flex-1">
-          <h3
-            className={`text-lg font-semibold ${todo.isCompleted ? "line-through text-gray-500" : "text-gray-800"}`}
-          >
+    <div className={`bg-white border rounded-lg p-5 transition-all duration-200 flex flex-col justify-between ${
+      todo.isCompleted 
+        ? 'border-gray-200 bg-gray-50/50' 
+        : 'border-gray-200 hover:border-gray-300 hover:shadow-sm hover:-translate-y-0.5'
+    }`}>
+      <div className="flex items-start gap-4">
+        <div className="pt-1">
+          <input 
+            type="checkbox" 
+            checked={todo.isCompleted || false}
+            onChange={() => onToggleComplete && onToggleComplete(todo._id)}
+            className="w-4 h-4 cursor-pointer accent-gray-900 rounded border-gray-300"
+          />
+        </div>
+        
+        <div className="flex-1">
+          <h3 className={`text-base font-medium ${
+            todo.isCompleted ? 'line-through text-gray-400' : 'text-gray-900'
+          }`}>
             {todo.title}
           </h3>
-
           {todo.description && (
-            <p
-              className={`text-sm mt-1 ${todo.isCompleted ? "line-through text-gray-400" : "text-gray-600"}`}
-            >
+            <p className={`mt-1 text-sm ${
+              todo.isCompleted ? 'line-through text-gray-400' : 'text-gray-500'
+            }`}>
               {todo.description}
             </p>
           )}
         </div>
       </div>
-
-      {/* Action Buttons */}
-      <div className="flex justify-end gap-2 mt-1">
-        <Button
+      
+      <div className="flex justify-end gap-2 mt-5 pt-4 border-t border-gray-100">
+        <Button 
+          variant="secondary"
           onClick={() => onEdit && onEdit(todo)}
-          className="!py-1 !px-3 text-sm bg-gray-500 hover:bg-gray-300 text-gray-700 shadow-none border border-gray-200"
-          {...(todo.isCompleted && { disabled: true })}
+          className="!px-3 !py-1.5 text-xs"
         >
           Edit
         </Button>
-
-        <Button
+        <Button 
+          variant="danger"
           onClick={() => onDelete && onDelete(todo._id)}
-          className="!py-1 !px-3 text-sm bg-red-500 hover:bg-red-300 text-red-600 shadow-none border border-red-200"
+          className="!px-3 !py-1.5 text-xs"
         >
           Delete
         </Button>
